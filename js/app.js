@@ -212,19 +212,23 @@ function copyToClipboard(text) {
 
 // ── API Call ──────────────────────────────────────────────────
 async function callClaude(messages, systemPrompt, maxTokens = 1000) {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' 
+    ? 'http://localhost:5000' 
+    : '';
+
+  const userMessage = messages.map(m => m.content).join('\n');
+
+  const response = await fetch(`${baseUrl}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: messages
+      message: userMessage,
+      system: systemPrompt
     })
   });
   const data = await response.json();
-  if (data.error) throw new Error(data.error.message || 'API Error');
-  return data.content.map(b => b.text || '').join('');
+  if (!response.ok) throw new Error(data.error || 'API Error');
+  return data.reply || '';
 }
 
 // ── Navigation highlight ──────────────────────────────────────

@@ -1,277 +1,328 @@
 /* ============================================================
-   NyaySetu — Chat Page (chat.js)
+   NyaySetu — AI Chat Assistant (chat.js)
    ============================================================ */
 
-const CHAT_SYSTEM = `You are NyaySetu, an expert AI legal assistant specializing in Indian law. You have deep knowledge of:
-- Indian Penal Code (IPC/BNS), Code of Criminal Procedure (CrPC/BNSS), Code of Civil Procedure (CPC)
-- Constitution of India, Fundamental Rights, Directive Principles
-- Consumer Protection Act 2019, Right to Information Act 2005
-- Transfer of Property Act, Indian Contract Act, Indian Evidence Act
-- Family law: Hindu Marriage Act, Muslim Personal Law, Special Marriage Act
-- Labour laws: ID Act, Minimum Wages Act, POSH Act, EPF Act
-- Motor Vehicles Act, Negotiable Instruments Act (cheque bounce)
-- Cyber law: IT Act 2000, DPDP Act 2023
-
-Guidelines:
-- Be clear, accurate, and helpful
-- Use simple language; avoid excessive legal jargon
-- Structure responses with paragraphs for readability
-- Always mention that serious legal matters require a qualified advocate
-- Cite specific sections/acts where relevant
-- Respond in the user's language if they write in Hindi/regional languages`;
-
-// ── State ─────────────────────────────────────────────────────
-let chatSessions = JSON.parse(localStorage.getItem('nyaysetu_sessions') || '[]');
-let currentSessionId = null;
-let currentMessages = [];
-let isStreaming = false;
-
-// ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  renderSidebar();
-  startNewSession();
-  setupInput();
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+
+  if (chatInput && sendBtn) {
+    sendBtn.addEventListener('click', handleSend);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+
+    // Auto-resize textarea
+    chatInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+      if (this.scrollHeight > 150) {
+        this.style.overflowY = 'auto';
+      } else {
+        this.style.overflowY = 'hidden';
+      }
+    });
+  }
+
+  // Pre-fill from session storage if redirected
+  const context = sessionStorage.getItem('chat_context');
+  if (context && chatInput) {
+    chatInput.value = context;
+    sessionStorage.removeItem('chat_context');
+    setTimeout(handleSend, 500);
+  }
+  
+  // Setup sidebar topics (Suggested questions)
+  document.querySelectorAll('.sidebar-topic, .topic-btn, .suggested-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const topic = btn.textContent.trim();
+      if(chatInput) {
+        chatInput.value = topic;
+        handleSend();
+      }
+    });
+  });
 });
 
-// ── Session management ────────────────────────────────────────
-function startNewSession(id) {
-  if (id) {
-    const s = chatSessions.find(s => s.id === id);
-    if (s) {
-      currentSessionId = id;
-      currentMessages = [...s.messages];
-      renderMessages();
-      highlightSidebar(id);
-      return;
-    }
-  }
-  currentSessionId = 'session_' + Date.now();
-  currentMessages = [];
-  const session = { id: currentSessionId, preview: 'New Chat', time: new Date().toISOString(), messages: [] };
-  chatSessions.unshift(session);
-  saveSessions();
-  renderSidebar();
-  resetChatUI();
-}
+async function handleSend() {
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  if (!chatInput || !chatMessages) return;
 
-function saveSessions() {
-  localStorage.setItem('nyaysetu_sessions', JSON.stringify(chatSessions.slice(0, 30)));
-}
-
-function updateSessionPreview(text) {
-  const s = chatSessions.find(s => s.id === currentSessionId);
-  if (s && s.preview === 'New Chat') {
-    s.preview = text.slice(0, 42) + (text.length > 42 ? '…' : '');
-    saveSessions();
-    renderSidebar();
-  }
-}
-
-// ── Sidebar ───────────────────────────────────────────────────
-function renderSidebar() {
-  const list = document.getElementById('chatHistoryList');
-  if (!list) return;
-  if (!chatSessions.length) {
-    list.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 8px">No previous chats</div>';
-    return;
-  }
-  list.innerHTML = chatSessions.map(s => `
-    <div class="chat-item ${s.id === currentSessionId ? 'active' : ''}" onclick="startNewSession('${s.id}')">
-      <span class="chat-item-icon">💬</span>
-      <span class="chat-item-text">${escHtml(s.preview)}</span>
-    </div>
-  `).join('');
-}
-
-function highlightSidebar(id) {
-  document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
-  const items = document.querySelectorAll('.chat-item');
-  const idx = chatSessions.findIndex(s => s.id === id);
-  if (items[idx]) items[idx].classList.add('active');
-}
-
-function resetChatUI() {
-  const msgs = document.getElementById('chatMessages');
-  if (!msgs) return;
-  msgs.innerHTML = `
-    <div class="msg ai animate-fade-up">
-      <div class="msg-avatar">N</div>
-      <div class="msg-content">
-        <div class="msg-bubble">
-          Namaste! 🙏 I am <strong>NyaySetu</strong>, your AI legal assistant for Indian law.<br><br>
-          I can help you with:
-          <ul style="margin-top:10px;padding-left:20px;line-height:1.9">
-            <li>Criminal law (FIR, bail, IPC sections)</li>
-            <li>Civil disputes (property, contracts, family)</li>
-            <li>Consumer complaints &amp; RTI</li>
-            <li>Labour rights &amp; workplace issues</li>
-            <li>Constitutional rights</li>
-          </ul>
-          <br>How can I assist you today?
-        </div>
-        <div class="msg-time">${getTimeStr()}</div>
-      </div>
-    </div>`;
-  renderSidebar();
-}
-
-// ── Input setup ───────────────────────────────────────────────
-function setupInput() {
-  const textarea = document.getElementById('chatInput');
-  if (!textarea) return;
-  textarea.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  });
-  textarea.addEventListener('input', () => {
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 130) + 'px';
-  });
-}
-
-function setQuickPrompt(text) {
-  const ta = document.getElementById('chatInput');
-  if (ta) { ta.value = text; ta.focus(); }
-}
-
-// ── Send message ──────────────────────────────────────────────
-async function sendMessage() {
-  if (isStreaming) return;
-  const ta = document.getElementById('chatInput');
-  const text = ta ? ta.value.trim() : '';
+  const text = chatInput.value.trim();
   if (!text) return;
 
-  isStreaming = true;
-  ta.value = ''; ta.style.height = 'auto';
-  document.getElementById('sendBtn').disabled = true;
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  chatInput.disabled = true;
+  document.getElementById('chatSendBtn').disabled = true;
 
-  appendUserMessage(text);
-  updateSessionPreview(text);
-  currentMessages.push({ role: 'user', content: text });
+  // 1. Add User Message
+  appendMessage('user', text);
 
-  const typingId = 'typing_' + Date.now();
-  appendTyping(typingId);
-
-  App.stats.chats++;
-  App.saveStats();
-  App.addActivity('chat', text.slice(0, 40));
+  // 2. Add AI Thinking State
+  const thinkingId = 'thinking-' + Date.now();
+  appendThinkingState(thinkingId);
+  scrollToBottom();
 
   try {
-    const reply = await callClaude(
-      currentMessages.slice(-12),
-      CHAT_SYSTEM,
-      1200
-    );
-    currentMessages.push({ role: 'assistant', content: reply });
-    replaceTypingWithMessage(typingId, reply);
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
+      ? 'http://localhost:5000' 
+      : '';
+      
+    let attempts = 0;
+    let success = false;
+    let data = null;
+    let response = null;
 
-    const s = chatSessions.find(s => s.id === currentSessionId);
-    if (s) { s.messages = [...currentMessages]; saveSessions(); }
+    while (attempts < 2 && !success) {
+      try {
+        response = await fetch(`${baseUrl}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            system: `You are a premium AI legal operating system for NyaySetu in India. 
+You MUST respond using EXACTLY this strict markdown structure for EVERY query. Do not add conversational filler before or after.
+
+### Main Answer
+### Simple Explanation
+(1-2 sentences explaining the issue in plain English and identifying the legal category)
+
+### Applicable Law
+(Bullet points of relevant acts, IPC/BNS/BNSS sections)
+
+### Step-by-Step Actions
+(Numbered list of exact next steps)
+
+### Your Options
+(Bullet points of available legal choices)
+
+### Time Limit
+(Specific deadlines, statutes of limitation, or urgency level)
+
+### Important Note
+(Mandatory short legal disclaimer)
+
+### Smart Alert
+(A 1-2 sentence critical warning, risk alert, or deadline reminder)
+
+### Case Summary
+(A structured 1-line summary format: [Category] - [Short Description] - [Location/Urgency])`
+          })
+        });
+        
+        data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'API Error');
+        success = true;
+      } catch (err) {
+        attempts++;
+        if (attempts < 2) {
+          const textEl = document.querySelector(`#${thinkingId} .thinking-text`);
+          if (textEl) textEl.textContent = "The legal AI service is taking longer than expected. Retrying securely...";
+          await new Promise(r => setTimeout(r, 1500));
+        } else {
+          throw err;
+        }
+      }
+    }
+    
+    // Remove thinking state
+    removeThinkingState(thinkingId);
+    
+    // 3. Render AI Response with streaming effect
+    if (data.reply) {
+      await streamAIResponse(data.reply);
+    } else {
+      throw new Error('Empty response');
+    }
+
   } catch (err) {
-    replaceTypingWithError(typingId, err.message);
-    showToast('Failed to get response. Check your connection.', 'error');
+    console.error('Chat Error:', err);
+    removeThinkingState(thinkingId);
+    appendMessage('ai', 'The legal AI service is experiencing high traffic or taking longer than expected. Please check your connection and try again.', true);
+  } finally {
+    chatInput.disabled = false;
+    document.getElementById('chatSendBtn').disabled = false;
+    chatInput.focus();
+    scrollToBottom();
   }
-
-  isStreaming = false;
-  document.getElementById('sendBtn').disabled = false;
 }
 
-// ── Message rendering ─────────────────────────────────────────
-function appendUserMessage(text) {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'msg user animate-fade-up';
-  div.innerHTML = `
-    <div class="msg-avatar">U</div>
-    <div class="msg-content">
-      <div class="msg-bubble">${escHtml(text)}</div>
-      <div class="msg-time">${getTimeStr()}</div>
-    </div>`;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+function appendMessage(role, text, isError = false) {
+  const chatMessages = document.getElementById('chatMessages');
+  if (!chatMessages) return;
+
+  const placeholder = document.getElementById('chatPlaceholder');
+  if (placeholder) placeholder.remove();
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `chat-message ${role} animate-fade-up`;
+  
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  if (role === 'user') {
+    msgDiv.innerHTML = `
+      <div class="msg-bubble user-bubble">${escHtml(text)}</div>
+      <div class="msg-meta">${time}</div>
+    `;
+  } else {
+    msgDiv.innerHTML = `
+      <div class="msg-avatar">⚖️</div>
+      <div class="msg-content">
+        <div class="msg-bubble ai-bubble ${isError ? 'error-bubble' : ''}">
+          ${isError ? `<div class="error-content">⚠️ ${text} <button class="btn btn-outline btn-sm mt-2" onclick="handleSend()">Retry</button></div>` : formatMarkdown(text)}
+        </div>
+        ${!isError ? generateInteractiveButtons() : ''}
+        <div class="msg-meta">NyaySetu AI • ${time}</div>
+      </div>
+    `;
+  }
+  
+  chatMessages.appendChild(msgDiv);
+  
+  if (role === 'ai' && !isError) {
+    if (window.App && App.addActivity) {
+      App.addActivity('chat', 'Chat with Legal AI');
+      App.stats.chats++;
+      App.saveStats();
+    }
+  }
 }
 
-function appendTyping(id) {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'msg ai animate-fade-in';
-  div.id = id;
-  div.innerHTML = `
-    <div class="msg-avatar">N</div>
+function appendThinkingState(id) {
+  const chatMessages = document.getElementById('chatMessages');
+  if (!chatMessages) return;
+
+  const placeholder = document.getElementById('chatPlaceholder');
+  if (placeholder) placeholder.remove();
+
+  const msgDiv = document.createElement('div');
+  msgDiv.id = id;
+  msgDiv.className = `chat-message ai animate-fade-in`;
+  msgDiv.innerHTML = `
+    <div class="msg-avatar">🤖</div>
     <div class="msg-content">
-      <div class="msg-bubble">
+      <div class="msg-bubble ai-bubble thinking-bubble">
+        <div class="thinking-text">Analyzing legal issue...</div>
         <div class="typing-dots"><span></span><span></span><span></span></div>
       </div>
-    </div>`;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+    </div>
+  `;
+  chatMessages.appendChild(msgDiv);
+  
+  const texts = ["Analyzing legal issue...", "Checking BNS/IPC sections...", "Structuring legal response..."];
+  let i = 0;
+  msgDiv.thinkingInterval = setInterval(() => {
+    i = (i + 1) % texts.length;
+    const textEl = msgDiv.querySelector('.thinking-text');
+    if (textEl) textEl.textContent = texts[i];
+  }, 1500);
 }
 
-function replaceTypingWithMessage(id, reply) {
+function removeThinkingState(id) {
   const el = document.getElementById(id);
-  if (!el) return;
-  const formatted = formatAIResponse(reply);
-  el.outerHTML = `
-    <div class="msg ai animate-fade-up">
-      <div class="msg-avatar">N</div>
-      <div class="msg-content">
-        <div class="msg-bubble">${formatted}</div>
-        <div class="msg-time">${getTimeStr()}</div>
-        <div class="msg-actions">
-          <button class="msg-action-btn" onclick="copyToClipboard(\`${reply.replace(/`/g,'\\`').replace(/\\/g,'\\\\')}\`)">📋 Copy</button>
-          <button class="msg-action-btn" onclick="sendToSimplifier(\`${reply.replace(/`/g,'\\`').replace(/\\/g,'\\\\')}\`)">🔍 Simplify</button>
-          <button class="msg-action-btn" onclick="window.location.href='documents.html'">📄 Make Document</button>
-        </div>
-      </div>
-    </div>`;
-  const msgs = document.getElementById('chatMessages');
-  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  if (el) {
+    clearInterval(el.thinkingInterval);
+    el.remove();
+  }
 }
 
-function replaceTypingWithError(id, errMsg) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.outerHTML = `
-    <div class="msg ai">
-      <div class="msg-avatar">N</div>
-      <div class="msg-content">
-        <div class="msg-bubble" style="color:var(--text-secondary)">
-          Sorry, I encountered an error: ${escHtml(errMsg)}. Please try again.
-        </div>
-      </div>
-    </div>`;
+async function streamAIResponse(markdownText) {
+  const chatMessages = document.getElementById('chatMessages');
+  if (!chatMessages) return;
+
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `chat-message ai`;
+  msgDiv.innerHTML = `
+    <div class="msg-avatar">⚖️</div>
+    <div class="msg-content">
+      <div class="msg-bubble ai-bubble streaming"></div>
+      <div class="msg-actions hidden">${generateInteractiveButtons()}</div>
+      <div class="msg-meta">NyaySetu AI • ${time}</div>
+    </div>
+  `;
+  chatMessages.appendChild(msgDiv);
+  scrollToBottom();
+
+  const bubble = msgDiv.querySelector('.msg-bubble');
+  const actions = msgDiv.querySelector('.msg-actions');
+
+  const tokens = markdownText.match(/\S+|\s+/g) || [];
+  let currentHtml = '';
+  
+  for (let i = 0; i < tokens.length; i++) {
+    currentHtml += tokens[i];
+    bubble.innerHTML = formatMarkdown(currentHtml);
+    if (i % 10 === 0) scrollToBottom();
+    await new Promise(r => setTimeout(r, Math.random() * 20 + 10));
+  }
+  
+  bubble.innerHTML = formatMarkdown(markdownText);
+  bubble.classList.remove('streaming');
+  actions.classList.remove('hidden');
+  actions.classList.add('animate-fade-up');
+  scrollToBottom();
 }
 
-function renderMessages() {
-  resetChatUI();
-  const msgs = document.getElementById('chatMessages');
-  currentMessages.forEach(m => {
-    if (m.role === 'user') appendUserMessage(m.content);
-    else {
-      const div = document.createElement('div');
-      div.className = 'msg ai';
-      div.innerHTML = `
-        <div class="msg-avatar">N</div>
-        <div class="msg-content">
-          <div class="msg-bubble">${formatAIResponse(m.content)}</div>
-          <div class="msg-time">–</div>
-        </div>`;
-      msgs.appendChild(div);
-    }
-  });
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function formatAIResponse(text) {
-  return escHtml(text)
-    .replace(/\n\n/g, '</p><p style="margin-top:10px">')
-    .replace(/\n/g, '<br>')
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>')
+function formatMarkdown(text) {
+  let formatted = text.replace(/### \*\*(.*?)\*\*/g, '### $1') // Cleanup injected bold headers
+    .replace(/### Smart Alert\s*\n(.*?)(?=\n###|$)/gs, '<div class="smart-alert-strip"><div class="alert-icon">🚨</div><div class="alert-content"><strong>Smart Alert</strong>$1</div><button class="btn btn-primary btn-sm" onclick="window.location.href=\'dashboard.html#lawyerMarketplace\'" style="white-space:nowrap">Protect Rights</button></div>')
+    .replace(/### Case Summary\s*\n(.*?)(?=\n###|$)/gs, '<div class="case-summary-strip"><div class="summary-icon">📁</div><div class="summary-content"><strong>Case Summary Generated</strong>$1</div></div>')
+    
+    // Section Cards
+    .replace(/### Simple Explanation/g, '<div class="legal-card-header explanation">✅ Simple Explanation</div>')
+    .replace(/### Applicable Law/g, '<div class="legal-card-header law">📜 Applicable Law</div>')
+    .replace(/### Step-by-Step Actions/g, '<div class="legal-card-header steps">📋 Step-by-Step Actions</div>')
+    .replace(/### Your Options/g, '<div class="legal-card-header options">⚡ Your Options</div>')
+    .replace(/### Time Limit/g, '<div class="legal-card-header urgency">⏰ Time Limit & Urgency</div>')
+    .replace(/### Important Note/g, '<div class="legal-card-header note">⚠️ Important Note</div>')
+    .replace(/### Main Answer/g, '') // Fallback cleanup
+    
+    // Basic Formatting
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n-\s(.*?)(?=\n|$)/g, '<br>• $1')
+    .replace(/\n(\d+\.\s.*?)(?=\n|$)/g, '<br><strong style="color:var(--text-primary)">$1</strong>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^/, '<p>').replace(/$/, '</p>');
+    
+  return formatted.replace(/<p><\/p>/g, '').replace(/<br><br>/g, '<br>');
 }
 
-function sendToSimplifier(text) {
-  sessionStorage.setItem('simplify_text', text);
-  window.location.href = 'simplifier.html';
+function generateInteractiveButtons() {
+  return `
+    <div class="ai-interactive-btns">
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='dashboard.html#lawyerMarketplace'"><span style="font-size:14px">👨‍⚖️</span> Connect with a Lawyer</button>
+      <button class="btn btn-outline btn-sm" onclick="window.location.href='documents.html'"><span style="font-size:14px">📄</span> Generate Legal Document</button>
+      <button class="btn btn-ghost btn-sm" onclick="alert('Secure Evidence Vault opening soon')"><span style="font-size:14px">📤</span> Upload Evidence</button>
+    </div>
+  `;
 }
+
+function scrollToBottom() {
+  const chatMessages = document.getElementById('chatMessages');
+  if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>'"]/g, 
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag])
+  );
+}
+
+window.handleSend = handleSend;

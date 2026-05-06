@@ -525,6 +525,7 @@ if (document.getElementById('dashboardPage')) {
     document.getElementById('statSaved').textContent = App.stats.saved;
     document.getElementById('statSessions').textContent = JSON.parse(localStorage.getItem('nyaysetu_sessions') || '[]').length;
     renderActivity();
+    renderLawyerMarketplace();
   }
 
   function renderActivity() {
@@ -555,4 +556,200 @@ if (document.getElementById('dashboardPage')) {
   }
 
   window.logout = logout;
+
+  // ── Lawyer Marketplace / Lead Inbox ───────────────────────────
+  function renderLawyerMarketplace() {
+    const container = document.getElementById('dashboardPage');
+    if (!container || document.getElementById('lawyerMarketplace')) return;
+
+    const section = document.createElement('div');
+    section.id = 'lawyerMarketplace';
+    section.className = 'container section lawyer-marketplace-section animate-fade-up';
+    section.style.marginTop = '40px';
+    section.style.borderTop = '1px solid var(--border)';
+    section.style.paddingTop = '60px';
+
+    section.innerHTML = `
+      <div class="section-header">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:8px;">
+          <h2 class="section-title" style="margin:0;">Lead Inbox</h2>
+          <span class="tag tag-outline" style="border-color: var(--gold); color: var(--gold); background: var(--gold-subtle);">
+            <span class="pulse-dot"></span> 4 Demo Leads
+          </span>
+          <span class="text-muted" style="font-size: 13px;">Sorted by urgency</span>
+        </div>
+        <p class="section-subtitle">These examples show how NyaySetu presents cases to lawyers: concise facts, category, city, expected consultation budget, urgency, and whether a summary is ready.</p>
+      </div>
+
+      <!-- Top Stats -->
+      <div class="lm-stats-grid">
+        <div class="lm-stat-card glass-card">
+          <div class="lm-stat-label">Active Leads Available</div>
+          <div class="lm-stat-value text-gold" style="display:flex; align-items:center; gap:8px;">24 <span class="tag" style="font-size:10px; padding:2px 6px;">+3 New</span></div>
+        </div>
+        <div class="lm-stat-card glass-card">
+          <div class="lm-stat-label">Your Conversion Rate</div>
+          <div class="lm-stat-value">68%</div>
+        </div>
+        <div class="lm-stat-card glass-card">
+          <div class="lm-stat-label">Avg. Response Time</div>
+          <div class="lm-stat-value">12m</div>
+        </div>
+        <div class="lm-stat-card glass-card">
+          <div class="lm-stat-label">Earnings (This Month)</div>
+          <div class="lm-stat-value">₹42,500</div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div class="lm-hiw-grid" style="margin-top: 40px;">
+        <div class="lm-hiw-card glass-card">
+          <div class="lm-hiw-icon">🤖</div>
+          <h4>1. AI Intake</h4>
+          <p>User explains their legal issue naturally in the chat interface.</p>
+        </div>
+        <div class="lm-hiw-card glass-card">
+          <div class="lm-hiw-icon">⚡</div>
+          <h4>2. Smart Summary</h4>
+          <p>AI generates a structured legal summary & organizes documents.</p>
+        </div>
+        <div class="lm-hiw-card glass-card">
+          <div class="lm-hiw-icon">⚖️</div>
+          <h4>3. Lawyer Match</h4>
+          <p>Relevant lawyers discover the case lead and connect instantly.</p>
+        </div>
+      </div>
+
+      <!-- Controls & Filters -->
+      <div class="lm-controls" style="margin-top: 48px;">
+        <input type="text" class="form-input lm-search" placeholder="🔍 Search leads by keyword, city, or category...">
+        <div class="lm-filters" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;">
+          <button class="tag tag-outline active" style="background:var(--bg-tertiary); color:var(--text-primary); border-color:var(--border);">All Leads</button>
+          <button class="tag tag-outline">Criminal</button>
+          <button class="tag tag-outline">Property</button>
+          <button class="tag tag-outline">Cyber Law</button>
+          <button class="tag tag-outline">Family</button>
+          <button class="tag tag-outline" style="border-color:var(--error); color:var(--error); background:rgba(239,83,80,0.1);">Urgent</button>
+          <button class="tag tag-outline">Nearby (Delhi)</button>
+        </div>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="lm-layout" style="margin-top: 32px;">
+        
+        <!-- Leads List -->
+        <div class="lm-leads-list">
+          
+          <!-- Lead Card 1 -->
+          <div class="lm-lead-card glass-card card-hover">
+            <div class="lm-lead-top">
+              <span class="lm-cat-badge property">Property</span>
+              <span class="lm-urgency high"><span class="urgency-dot red"></span> High Urgency</span>
+            </div>
+            <h3 class="lm-lead-title">Tenant deposit recovery</h3>
+            <p class="lm-lead-summary">Landlord refusing to return ₹50,000 security deposit after 11-month lease completion.</p>
+            <div class="lm-ai-context">
+              <strong>✨ AI Context:</strong> Verified lease agreement clause 4. Tenant gave proper 1-month notice. Actionable under Rent Control Act.
+            </div>
+            <div class="lm-meta-pills">
+              <span class="lm-pill">📍 Delhi</span>
+              <span class="lm-pill">💰 ₹1,500 Budget</span>
+              <span class="lm-pill">📝 Summary Ready</span>
+              <span class="lm-pill">📎 Docs Uploaded</span>
+            </div>
+            <div class="lm-actions">
+              <button class="btn btn-primary btn-sm" onclick="window.acceptLead(this)">✅ Accept Lead</button>
+              <button class="btn btn-outline btn-sm" onclick="window.requestDocs(this)">📄 Request Documents</button>
+              <button class="btn btn-ghost btn-sm" onclick="this.closest('.lm-lead-card').style.display='none'">❌ Decline</button>
+            </div>
+          </div>
+
+          <!-- Lead Card 2 -->
+          <div class="lm-lead-card glass-card card-hover">
+            <div class="lm-lead-top">
+              <span class="lm-cat-badge criminal">Criminal</span>
+              <span class="lm-urgency high"><span class="urgency-dot red"></span> High Urgency</span>
+            </div>
+            <h3 class="lm-lead-title">Family received police call after FIR threat</h3>
+            <p class="lm-lead-summary">Neighbour threatened false FIR over parking dispute. Police called family to station informally without written notice.</p>
+            <div class="lm-ai-context">
+              <strong>✨ AI Context:</strong> Potential abuse of power. No formal notice under 41A BNSS/CrPC issued. Anticipatory bail guidance might be required.
+            </div>
+            <div class="lm-meta-pills">
+              <span class="lm-pill">📍 Mumbai</span>
+              <span class="lm-pill">💰 ₹2,500 Budget</span>
+              <span class="lm-pill">📝 Summary Ready</span>
+            </div>
+            <div class="lm-actions">
+              <button class="btn btn-primary btn-sm" onclick="window.acceptLead(this)">✅ Accept Lead</button>
+              <button class="btn btn-outline btn-sm" onclick="window.requestDocs(this)">📄 Request Documents</button>
+              <button class="btn btn-ghost btn-sm" onclick="this.closest('.lm-lead-card').style.display='none'">❌ Decline</button>
+            </div>
+          </div>
+
+          <!-- Lead Card 3 -->
+          <div class="lm-lead-card glass-card card-hover">
+            <div class="lm-lead-top">
+              <span class="lm-cat-badge cyber">Cyber Law</span>
+              <span class="lm-urgency medium"><span class="urgency-dot yellow"></span> Medium</span>
+            </div>
+            <h3 class="lm-lead-title">UPI fraud through fake support number</h3>
+            <p class="lm-lead-summary">Lost ₹85,000 to scammers pretending to be bank customer support found on Google search.</p>
+            <div class="lm-ai-context">
+              <strong>✨ AI Context:</strong> Cyber cell complaint drafted by AI. Requires immediate legal notice to bank for reversing unauthorized transaction per RBI guidelines.
+            </div>
+            <div class="lm-meta-pills">
+              <span class="lm-pill">📍 Bangalore</span>
+              <span class="lm-pill">💰 ₹1,000 Budget</span>
+              <span class="lm-pill">📝 Summary Ready</span>
+              <span class="lm-pill">📎 Docs Uploaded</span>
+            </div>
+            <div class="lm-actions">
+              <button class="btn btn-primary btn-sm" onclick="window.acceptLead(this)">✅ Accept Lead</button>
+              <button class="btn btn-outline btn-sm" onclick="window.requestDocs(this)">📄 Request Documents</button>
+              <button class="btn btn-ghost btn-sm" onclick="this.closest('.lm-lead-card').style.display='none'">❌ Decline</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Advanced Features Sidebar -->
+        <div class="lm-sidebar">
+          <div class="lm-sidebar-widget glass-card">
+            <h4>⚡ Live Bidding System</h4>
+            <p class="text-muted" style="font-size:13px; margin:8px 0;">Compete for high-value corporate cases in real-time. (Beta)</p>
+            <button class="btn btn-outline btn-full btn-sm mt-2">Join Waitlist</button>
+          </div>
+          <div class="lm-sidebar-widget glass-card">
+            <h4>🎯 AI Recommendation Score</h4>
+            <p class="text-muted" style="font-size:13px; margin:8px 0;">Your match score for property cases is <strong style="color:var(--gold);">94%</strong> based on your specialization and recent success rate.</p>
+          </div>
+          <div class="lm-sidebar-widget glass-card">
+            <h4>🔒 Secure Document Vault</h4>
+            <p class="text-muted" style="font-size:13px; margin:8px 0;">All client documents are end-to-end encrypted and automatically organized by our AI context engine.</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(section);
+  }
+
+  window.acceptLead = function(btn) {
+    btn.innerHTML = '<span class="spinner spinner-sm" style="border-top-color:#0A0A0A"></span> Assigning...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.innerHTML = '✨ Case Assigned';
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-outline');
+      btn.style.borderColor = 'var(--success)';
+      btn.style.color = 'var(--success)';
+      btn.style.background = 'rgba(76, 175, 80, 0.1)';
+      showToast('Lead Accepted! The user has been notified: "A lawyer is interested in your case". Chat room opened.', 'success');
+    }, 1200);
+  };
+
+  window.requestDocs = function(btn) {
+    showToast('Document request sent to the user securely.', 'info');
+  };
 }

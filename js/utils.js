@@ -19,7 +19,7 @@ function toggleTheme() {
   if (btn) btn.textContent = isDark ? '☽' : '☀';
 }
 
-const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5000" : "https://nyaysetu-a5vj.onrender.com";
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:" ? "http://localhost:5000" : "https://nyaysetu-a5vj.onrender.com";
 
 // ── TOAST ──
 function showToast(msg, icon = '✓') {
@@ -38,9 +38,18 @@ function showToast(msg, icon = '✓') {
 }
 
 // ── CLAUDE API ──
-async function callClaude(system, userMsg, history = []) {
+async function callClaude(arg1, arg2, arg3) {
 
   try {
+    let system, message;
+    if (Array.isArray(arg1)) {
+      message = arg1.map(m => m.content).join('\n');
+      system = arg2;
+    } else {
+      system = arg1;
+      message = arg2;
+    }
+
     const res = await fetch(`${API_BASE_URL}/chat`, {
       method: "POST",
       headers: {
@@ -48,16 +57,17 @@ async function callClaude(system, userMsg, history = []) {
       },
       body: JSON.stringify({
         system,
-        message: userMsg,
-        history
+        message
       })
     });
 
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Server error");
     return data.reply;
 
   } catch (err) {
-    return "Unable to connect to server.";
+    console.error("API Error:", err);
+    return "Unable to connect to server. Please ensure your backend is running.";
   }
 }
 

@@ -289,13 +289,17 @@ app.post("/chat", async (req, res) => {
     const data = await response.json();
     console.log("CHAT RESPONSE:", data);
 
+    if (data.error) {
+      return res.status(502).json({ error: data.error.message || "Upstream API Error" });
+    }
+
     res.json({
       reply: data.choices?.[0]?.message?.content || "No response"
     });
 
   } catch (err) {
-    console.error(err);
-    res.json({ reply: "Server error. Try again." });
+    console.error("CHAT ERROR:", err);
+    res.status(500).json({ error: "Server error. Try again." });
   }
 });
 
@@ -396,6 +400,10 @@ ${fieldsText}`
 
     const data = await response.json();
 
+    if (data.error) {
+      return res.status(502).json({ error: data.error.message || "Upstream API Error" });
+    }
+
     const documentText = String(data.choices?.[0]?.message?.content || "No response")
       .replace(/\r\n?/g, "\n")
       .split("\n")
@@ -408,7 +416,8 @@ ${fieldsText}`
     });
 
   } catch (err) {
-    res.json({ document: "Server error while generating document." });
+    console.error("GENERATE DOC ERROR:", err);
+    res.status(500).json({ error: "Server error while generating document." });
   }
 });
 // ================= LAWYER CONNECTIVITY =================
