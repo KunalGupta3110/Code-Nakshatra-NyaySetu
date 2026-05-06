@@ -607,7 +607,22 @@
       display: flex;
     }
 
+    .mobile-lawyer-connect {
+      display: none;
+      margin-bottom: 12px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .mobile-lawyer-connect button {
+      width: 100%;
+      max-width: 100%;
+    }
+
     @media (max-width: 860px) {
+      .mobile-lawyer-connect {
+        display: block;
+      }
       .sidebar {
         display: none;
       }
@@ -726,112 +741,311 @@
         pointer-events: all;
       }
       .lawyer-modal {
-        width: min(1100px, 100%);
+        width: min(900px, 100%);
         max-height: calc(100vh - 48px);
-        background: rgba(10, 12, 24, 0.98);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 28px;
-        box-shadow: 0 40px 120px rgba(0,0,0,0.35);
+        background: linear-gradient(135deg, rgba(10, 12, 24, 0.99) 0%, rgba(15, 18, 35, 0.99) 100%);
+        border: 1px solid rgba(255,217,110,0.15);
+        border-radius: 24px;
+        box-shadow: 0 25px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
         overflow: hidden;
         display: flex;
         flex-direction: column;
+        backdrop-filter: blur(20px);
       }
       .lawyer-modal-header {
         display: flex;
         justify-content: space-between;
         gap: 16px;
-        align-items: flex-start;
-        padding: 28px 32px 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        align-items: center;
+        padding: 24px 32px 20px;
+        border-bottom: 1px solid rgba(255,217,110,0.08);
+      }
+      .modal-eyebrow {
+        font-size: 12px;
+        color: var(--ts);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
       .lawyer-modal-title {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 700;
         color: var(--tp);
-        margin-bottom: 6px;
+        margin: 0;
       }
       .lawyer-modal-copy {
-        color: var(--ts);
-        line-height: 1.6;
-        max-width: 700px;
+        display: none;
+      }
+      .lawyer-case-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(255,217,110,0.15);
+        color: #FFD96A;
+        border: 1px solid rgba(255,217,110,0.3);
+        white-space: nowrap;
       }
       .lawyer-modal-close {
         background: transparent;
         border: 1px solid rgba(255,255,255,0.1);
         color: var(--tp);
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         font-size: 18px;
         cursor: pointer;
+        transition: all 200ms ease;
+      }
+      .lawyer-modal-close:hover {
+        background: rgba(255,217,110,0.1);
+        border-color: rgba(255,217,110,0.3);
       }
       .lawyer-modal-filters {
         display: grid;
-        grid-template-columns: repeat(3, minmax(180px, 1fr));
-        gap: 16px;
-        padding: 20px 32px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        grid-template-columns: repeat(3, minmax(160px, 1fr));
+        gap: 14px;
+        padding: 18px 32px;
+        border-bottom: 1px solid rgba(255,217,110,0.08);
+        background: rgba(255,217,110,0.02);
+        sticky: top;
       }
-      .lawyer-filter { display: flex; flex-direction: column; gap: 8px; }
-      .lawyer-filter label { font-size: 12px; font-weight: 600; color: var(--ts); }
+      .lawyer-filter { display: flex; flex-direction: column; gap: 6px; }
+      .lawyer-filter label { font-size: 11px; font-weight: 600; color: var(--ts); text-transform: uppercase; letter-spacing: 0.3px; }
       .lawyer-filter select {
         width: 100%;
-        min-height: 46px;
-        border-radius: 14px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.1);
+        min-height: 42px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,217,110,0.2);
         color: var(--tp);
-        padding: 0 14px;
-        font-size: 14px;
+        padding: 0 12px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 150ms ease;
+      }
+      .lawyer-filter select:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,217,110,0.35);
+      }
+      .lawyer-filter select:focus {
+        outline: none;
+        background: rgba(255,255,255,0.1);
+        border-color: rgba(255,217,110,0.5);
+        box-shadow: 0 0 0 3px rgba(255,217,110,0.1);
       }
       .lawyer-modal-body {
         overflow-y: auto;
         padding: 24px 32px 32px;
+        flex: 1;
+        scrollbar-color: rgba(255,217,110,0.3) transparent;
+        scrollbar-width: thin;
+      }
+      .lawyer-modal-body::-webkit-scrollbar {
+        width: 8px;
+      }
+      .lawyer-modal-body::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .lawyer-modal-body::-webkit-scrollbar-thumb {
+        background: rgba(255,217,110,0.25);
+        border-radius: 4px;
+      }
+      .lawyer-modal-body::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,217,110,0.4);
       }
       .lawyer-modal-summary {
-        margin-bottom: 24px;
-        display: grid;
-        gap: 8px;
+        display: none;
       }
-      .lawyer-summary-label { color: var(--ts); font-size: 13px; }
-      .lawyer-summary-text { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px; color: var(--tp); line-height: 1.8; font-size: 14px; }
       .lawyer-modal-toolbar {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 18px;
+        justify-content: flex-start;
+        gap: 8px;
+        margin-bottom: 20px;
       }
-      .lawyer-match-count { color: var(--tp); font-weight: 600; }
-      .lawyer-card-list { display: grid; gap: 18px; }
+      .lawyer-match-count { color: var(--tp); font-weight: 600; font-size: 15px; }
+      .lawyer-card-list { display: flex; flex-direction: column; gap: 16px; }
       .lawyer-card {
-        display: grid;
-        grid-template-columns: 76px minmax(0, 1fr) 200px;
-        gap: 18px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 24px;
-        padding: 22px;
-        align-items: start;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(135deg, rgba(20, 24, 48, 0.6) 0%, rgba(15, 18, 35, 0.4) 100%);
+        border: 1px solid rgba(255,217,110,0.12);
+        border-radius: 18px;
+        padding: 20px;
+        gap: 16px;
+        transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
       }
-      .lawyer-card-left { display: flex; flex-direction: column; gap: 16px; }
-      .lawyer-avatar { width: 68px; height: 68px; border-radius: 22px; background: linear-gradient(135deg, rgba(255,217,110,0.95), rgba(250,171,54,0.85)); color: #0A0A0A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; }
-      .lawyer-info { display: grid; gap: 10px; }
-      .lawyer-name { font-size: 16px; font-weight: 700; color: var(--tp); }
-      .lawyer-subtitle { font-size: 13px; color: var(--ts); }
-      .lawyer-meta-row { display: flex; flex-wrap: wrap; gap: 6px; color: var(--ts); font-size: 12px; }
-      .lawyer-card-middle { display: flex; flex-direction: column; gap: 12px; }
-      .lawyer-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-      .lawyer-tag { padding: 6px 10px; border-radius: 999px; font-size: 12px; background: rgba(255,255,255,0.05); color: var(--ts); border: 1px solid rgba(255,255,255,0.08); }
-      .lawyer-summary { color: var(--ts); font-size: 13px; line-height: 1.75; }
-      .lawyer-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-      .lawyer-fee { font-size: 20px; font-weight: 700; color: var(--tp); }
-      .lawyer-rating { font-size: 13px; color: var(--accent); font-weight: 700; }
-      .lawyer-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-      .lawyer-card-right .btn { width: 100%; }
-      .lawyer-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; font-size: 12px; color: #D2FFD2; background: rgba(29,120,77,0.18); border: 1px solid rgba(64,200,123,0.2); }
-      .lawyer-empty-state { color: var(--ts); padding: 24px 20px; border: 1px dashed rgba(255,255,255,0.12); border-radius: 18px; text-align: center; }
-      .lawyer-loader { color: var(--tp); text-align: center; padding: 40px 0; }
+      .lawyer-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,217,110,0.05) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 250ms ease;
+        pointer-events: none;
+      }
+      .lawyer-card:hover {
+        background: linear-gradient(135deg, rgba(25, 30, 55, 0.8) 0%, rgba(20, 24, 45, 0.6) 100%);
+        border-color: rgba(255,217,110,0.25);
+        box-shadow: 0 8px 32px rgba(255,217,110,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+      }
+      .lawyer-card:hover::before {
+        opacity: 1;
+      }
+      .lawyer-card-top {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .lawyer-avatar {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #FFD96A 0%, #F5A936 100%);
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 24px;
+        box-shadow: 0 4px 16px rgba(255,217,110,0.25);
+      }
+      .lawyer-card-header {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .lawyer-name-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .lawyer-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--tp);
+      }
+      .lawyer-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #4CC76F;
+        background: rgba(76,199,111,0.12);
+      }
+      .lawyer-quals {
+        font-size: 12px;
+        color: var(--ts);
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .lawyer-card-right {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .lawyer-fee-box {
+        text-align: right;
+        min-width: 90px;
+      }
+      .lawyer-fee {
+        font-size: 18px;
+        font-weight: 700;
+        color: #FFD96A;
+        line-height: 1.2;
+      }
+      .lawyer-fee-label {
+        font-size: 11px;
+        color: var(--ts);
+        font-weight: 500;
+      }
+      .lawyer-card-middle {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .lawyer-rating-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .lawyer-rating {
+        font-size: 14px;
+        color: #FFD96A;
+        font-weight: 700;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .lawyer-reviews {
+        font-size: 12px;
+        color: var(--ts);
+      }
+      .lawyer-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .lawyer-tag {
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        background: rgba(255,217,110,0.12);
+        color: #FFD96A;
+        border: 1px solid rgba(255,217,110,0.25);
+        font-weight: 600;
+      }
+      .lawyer-summary {
+        color: var(--ts);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      .lawyer-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+      }
+      .lawyer-actions .btn {
+        flex: 1;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        min-height: 42px;
+      }
+      .lawyer-empty-state {
+        color: var(--ts);
+        padding: 32px 24px;
+        border: 1px dashed rgba(255,217,110,0.2);
+        border-radius: 14px;
+        text-align: center;
+        background: rgba(255,217,110,0.05);
+      }
+      .lawyer-loader {
+        color: var(--tp);
+        text-align: center;
+        padding: 48px 24px;
+        font-size: 15px;
+      }
+      .lawyer-error {
+        color: #FF6B6B;
+        padding: 32px 24px;
+        border: 1px dashed rgba(255,107,107,0.3);
+        border-radius: 14px;
+        text-align: center;
+        background: rgba(255,107,107,0.08);
+      }
 
       @media(max-width:880px) {
         .lawyer-modal { max-height: calc(100vh - 24px); }
@@ -950,7 +1164,8 @@
             <div class="chat-name" data-i18n="chat_name">NyaySetu AI</div>
             <div class="online-dot"></div>
           </div>
-          <div class="desktop-only" style="position: absolute; right: 24px; display: flex; gap: 8px;">
+          <div class="desktop-only" style="position: absolute; right: 24px; display: flex; gap: 8px; align-items: center;">
+            <button class="btn btn-primary btn-sm" id="connect-lawyer-btn" onclick="openLawyerConnect()" style="display:none;">Connect with a Lawyer</button>
             <button class="btn-ghost btn-sm" onclick="clearChat()" data-i18n="chat_new">New Chat</button>
           </div>
         </div>
@@ -973,6 +1188,9 @@
 
         <div class="chat-input-zone">
           <div class="disclaimer">
+          </div>
+          <div class="mobile-lawyer-connect">
+            <button class="btn btn-primary btn-sm" id="connect-lawyer-btn-mobile" onclick="openLawyerConnect()" style="display:none;">Connect with a Lawyer</button>
           </div>
           <div class="input-wrap">
             <textarea class="chat-ta" id="chat-input" data-i18n-placeholder="chat_placeholder"
@@ -1103,6 +1321,32 @@
       msgs.innerHTML = '';
       msgs.insertAdjacentHTML('beforeend', welcomeHTML());
       applyTranslations?.(currentStrings);
+      hideConnectLawyerButton();
+    }
+
+    function showConnectLawyerButton() {
+      const btn = document.getElementById('connect-lawyer-btn');
+      const mobileBtn = document.getElementById('connect-lawyer-btn-mobile');
+      if (btn) btn.style.display = 'inline-flex';
+      if (mobileBtn) mobileBtn.style.display = 'inline-flex';
+    }
+
+    function hideConnectLawyerButton() {
+      const btn = document.getElementById('connect-lawyer-btn');
+      const mobileBtn = document.getElementById('connect-lawyer-btn-mobile');
+      if (btn) btn.style.display = 'none';
+      if (mobileBtn) mobileBtn.style.display = 'none';
+    }
+
+    window.openLawyerConnect = async function () {
+      try {
+        openLawyerModal();
+        const context = await createCaseIfNeeded();
+        await loadLawyerModalForCase(context.caseId);
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || 'Unable to open lawyer matches.', '⚠');
+      }
     }
 
     function welcomeHTML() {
@@ -1196,6 +1440,7 @@ Rules:
 
         window.lastUserText = text;
         window.lastAiReply = reply;
+        showConnectLawyerButton();
 
         msgs.insertAdjacentHTML('beforeend', `
       <div class="msg-row a" id="lawyer-prompt-${mid}" style="margin-top:-12px;">
@@ -1261,9 +1506,9 @@ Rules:
 
     function buildCaseContext() {
       const userText = window.lastUserText || 'Legal inquiry';
-      const aiReply = window.lastAiReply || 'Case details';
+      const aiReply = window.lastAiReply || '';
       const problemType = detectProblemType(userText, aiReply);
-      const summary = aiReply.trim().substring(0, 650);
+      const summary = (aiReply.trim() || userText.trim()).substring(0, 650);
       const facts = [userText.trim()];
       const documents = [summary];
       const user = getStoredUser();
@@ -1400,13 +1645,24 @@ Rules:
       if (body) body.innerHTML = '<div class="lawyer-loader">Finding the best lawyers for your case…</div>';
       if (count) count.textContent = 'Matching lawyers...';
 
-      const data = await fetchMatchedLawyers(caseId);
-      lawyerModalState.activeCase = data.case;
-      lawyerModalState.lawyers = (data.lawyers || []).map(lawyer => ({ ...lawyer, initials: lawyer.initials || (lawyer.name || 'U').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase() }));
-      lawyerModalState.filters.caseType = data.case.problemType || 'All';
-      document.getElementById('lawyer-filter-type').value = lawyerModalState.filters.caseType;
-      renderLawyerModalHeader();
-      renderLawyerCards();
+      try {
+        const data = await fetchMatchedLawyers(caseId);
+        lawyerModalState.activeCase = data.case || window.currentCaseContext || {};
+        lawyerModalState.lawyers = (data.lawyers || []).map(lawyer => ({ ...lawyer, initials: lawyer.initials || (lawyer.name || 'U').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase() }));
+        lawyerModalState.filters.caseType = lawyerModalState.activeCase.problemType || 'All';
+        document.getElementById('lawyer-filter-type').value = lawyerModalState.filters.caseType;
+        renderLawyerModalHeader();
+        renderLawyerCards();
+      } catch (err) {
+        console.error(err);
+        lawyerModalState.activeCase = window.currentCaseContext || { problemType: 'General', summary: window.lastUserText || 'Your query' };
+        lawyerModalState.filters.caseType = lawyerModalState.activeCase.problemType || 'All';
+        document.getElementById('lawyer-filter-type').value = lawyerModalState.filters.caseType;
+        renderLawyerModalHeader();
+        if (count) count.textContent = 'Unable to load lawyer matches';
+        if (body) body.innerHTML = `<div class="lawyer-error">Unable to load matching lawyers. Please try again shortly.</div>`;
+        throw err;
+      }
     }
 
     async function submitLawyerRequest(lawyerId, button, endpoint, successMessage, defaultText) {
@@ -1455,9 +1711,9 @@ Rules:
       }
 
       try {
+        openLawyerModal();
         const context = await createCaseIfNeeded();
         await loadLawyerModalForCase(context.caseId);
-        openLawyerModal();
       } catch (err) {
         console.error(err);
         showToast(err.message || 'Failed to connect. Please try again later.', '⚠');
