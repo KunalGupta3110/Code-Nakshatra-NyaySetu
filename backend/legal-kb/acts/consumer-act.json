@@ -1,0 +1,101 @@
+{
+  "name": "Consumer Protection Act, 2019",
+  "shortName": "CPA 2019",
+  "category": "Consumer Law",
+  "jurisdiction": "India",
+  "effectiveDate": "2020-07-20",
+  "description": "Comprehensive consumer protection law covering consumer rights, remedies, and consumer disputes.",
+  "sections": [
+    {
+      "number": 2,
+      "title": "Definitions",
+      "content": "Key definitions including consumer, consumer dispute, defect, unfair trade practice, etc.",
+      "subsections": [
+        {
+          "number": 7,
+          "title": "Consumer",
+          "content": "A consumer is any natural person who buys any goods or avails of any service for a consideration. The money paid for goods or service may be paid by any mode of consideration."
+        },
+        {
+          "number": 16,
+          "title": "Unfair trade practice",
+          "content": "Any practice which for the purpose of promoting the sale, use or supply of any goods or services, adopts any unfair method or unfair or deceptive practice."
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "title": "Consumer Disputes Redressal Commission",
+      "content": "Establishment of District, State, and National Consumer Disputes Redressal Commissions to hear and dispose of consumer complaints.",
+      "keywords": ["redressal", "commission", "consumer disputes"],
+      "explanations": [
+        "District Commission: Complaints up to Rs. 1 crore",
+        "State Commission: Appeals and cases above Rs. 1 crore but up to Rs. 10 crores",
+        "National Commission: Appeals and cases above Rs. 10 crores"
+      ]
+    },
+    {
+      "number": 20,
+      "title": "Consumer complaint",
+      "content": "A consumer shall make a complaint in writing to the District Commission within two years from the date on which the cause of action has arisen.",
+      "keywords": ["complaint", "limitation", "consumer"],
+      "penalties": {
+        "limitation": "2 years from cause of action"
+      }
+    },
+    {
+      "number": 34,
+      "title": "Grounds of complaint",
+      "content": "A complaint may be filed on grounds that goods or services were not as agreed, or have defects, or due to unfair trade practices.",
+      "keywords": ["defect", "unfair practice", "complaint grounds"],
+      "subsections": [
+        {
+          "number": 1,
+          "title": "Complaint grounds",
+          "content": "(a) Goods are defective or services are deficient\n(b) Goods are hazardous or services cause injury\n(c) Consumer is charged unfairly\n(d) Misleading advertisements\n(e) Unfair or restrictive trade practices"
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "title": "Relief",
+      "content": "In the case of a complaint about defective goods or deficient services, the consumer may seek: removal or replacement of goods, refund with interest, compensation for loss or injury, cost of proceedings.",
+      "keywords": ["relief", "remedy", "compensation"],
+      "subsections": [
+        {
+          "number": 1,
+          "title": "Remedies available",
+          "content": "(a) Removal of defect by repair\n(b) Replacement of goods\n(c) Refund of the price\n(d) Compensation\n(e) Costs of the complaint"
+        }
+      ]
+    },
+    {
+      "number": 48,
+      "title": "Recovery of compensation",
+      "content": "Where a District Commission grants any relief, the same shall be complied within 30 days from the date of order, failing which the consumer may recover the amount with interest at 12% per annum.",
+      "keywords": ["compensation", "enforcement", "interest"],
+      "penalties": {
+        "interest": "12% per annum on non-compliance"
+      }
+    }
+  ],
+  "procedures": [
+    {
+      "name": "Filing Consumer Complaint",
+      "steps": [
+        "Identify the appropriate consumer commission (District/State/National)",
+        "Prepare written complaint with supporting documents",
+        "File complaint within 2 years of cause of action",
+        "Pay required fee as per jurisdiction",
+        "Await acknowledgement and hearing date",
+        "Present case with evidence and witnesses",
+        "Receive order from commission"
+      ]
+    }
+  ],
+  "crossReferences": {
+    "CPA": "Indian consumer protection framework"
+  },
+  "lastUpdated": "2023-01-01",
+  "source": "India Code Official"
+}

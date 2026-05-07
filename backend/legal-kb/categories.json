@@ -1,0 +1,131 @@
+{
+  "domains": {
+    "criminal": {
+      "name": "Criminal Law",
+      "description": "Criminal offences, FIR, bail, procedures",
+      "applicableLaws": ["BNS", "BNSS", "BSA"],
+      "keywords": ["crime", "police", "fir", "bail", "jail", "offence", "punishment", "arrest"],
+      "urgencyLevel": "high",
+      "escalationRequired": true,
+      "examples": ["FIR procedure", "Bail process", "Criminal offense guidance"]
+    },
+    "civil": {
+      "name": "Civil Law",
+      "description": "Civil disputes, recovery, injunctions",
+      "applicableLaws": ["CPC", "Indian Contract Act", "Specific Relief Act"],
+      "keywords": ["dispute", "contract", "agreement", "claim", "recovery", "money", "damages"],
+      "urgencyLevel": "medium",
+      "escalationRequired": true,
+      "examples": ["Contract disputes", "Recovery matters", "Injunctions"]
+    },
+    "property": {
+      "name": "Property Law",
+      "description": "Property ownership, disputes, registry",
+      "applicableLaws": ["Transfer of Property Act", "Indian Registration Act", "Urban Land Ceiling Act"],
+      "keywords": ["property", "land", "building", "ownership", "registry", "encroachment", "rent"],
+      "urgencyLevel": "medium",
+      "escalationRequired": true,
+      "examples": ["Property disputes", "Registry issues", "Landlord-tenant matters"]
+    },
+    "family": {
+      "name": "Family Law",
+      "description": "Divorce, custody, maintenance, marriage",
+      "applicableLaws": ["Hindu Marriage Act", "Divorce Act", "Christian Marriage Act", "Muslim Personal Law", "Guardianship Act"],
+      "keywords": ["divorce", "marriage", "custody", "alimony", "maintenance", "separation", "child"],
+      "urgencyLevel": "medium",
+      "escalationRequired": true,
+      "examples": ["Divorce procedures", "Child custody", "Maintenance claims"]
+    },
+    "consumer": {
+      "name": "Consumer Law",
+      "description": "Consumer complaints, refunds, warranties",
+      "applicableLaws": ["Consumer Protection Act 2019"],
+      "keywords": ["complaint", "refund", "defect", "product", "service", "warranty", "fraud", "cheating"],
+      "urgencyLevel": "medium",
+      "escalationRequired": false,
+      "examples": ["Product defects", "Refund claims", "Consumer disputes"]
+    },
+    "cyber": {
+      "name": "Cyber Law",
+      "description": "Cyber crime, online fraud, data privacy",
+      "applicableLaws": ["IT Act 2000", "BNS Cyber Provisions"],
+      "keywords": ["cyber", "online", "fraud", "hacking", "privacy", "data", "identity", "scam", "password"],
+      "urgencyLevel": "high",
+      "escalationRequired": true,
+      "examples": ["Online fraud", "Data breach", "Cyber harassment"]
+    },
+    "labour": {
+      "name": "Labour & Employment Law",
+      "description": "Employment disputes, salary, wrongful termination",
+      "applicableLaws": ["Labour Code on Wages", "Labour Code on Industrial Relations", "Labour Code on Social Security"],
+      "keywords": ["salary", "employment", "job", "termination", "harassment", "pf", "esi", "gratuity", "bonus"],
+      "urgencyLevel": "medium",
+      "escalationRequired": true,
+      "examples": ["Salary disputes", "Wrongful termination", "Workplace harassment"]
+    },
+    "tax": {
+      "name": "Tax & Financial Law",
+      "description": "Income tax, GST, financial disputes",
+      "applicableLaws": ["Income Tax Act 1961", "GST Act", "Banking Regulation Act"],
+      "keywords": ["tax", "income", "gst", "loan", "bank", "debt", "harassment", "recovery"],
+      "urgencyLevel": "medium",
+      "escalationRequired": false,
+      "examples": ["Tax guidance", "GST basics", "Loan disputes"]
+    },
+    "intellectual": {
+      "name": "Intellectual Property",
+      "description": "Trademark, copyright, patents",
+      "applicableLaws": ["Patents Act", "Trademark Act", "Copyright Act"],
+      "keywords": ["trademark", "copyright", "patent", "brand", "content", "intellectual", "infringement"],
+      "urgencyLevel": "low",
+      "escalationRequired": true,
+      "examples": ["Brand protection", "Copyright issues", "Patent basics"]
+    },
+    "motor": {
+      "name": "Motor Vehicle & Accident Law",
+      "description": "Accident claims, insurance, traffic",
+      "applicableLaws": ["Motor Vehicles Act 1988"],
+      "keywords": ["accident", "car", "vehicle", "insurance", "claim", "challan", "traffic", "compensation"],
+      "urgencyLevel": "medium",
+      "escalationRequired": false,
+      "examples": ["Accident compensation", "Insurance claims", "Traffic violations"]
+    },
+    "constitutional": {
+      "name": "Constitutional & Citizen Rights",
+      "description": "Fundamental rights, RTI, government procedures",
+      "applicableLaws": ["Constitution of India", "RTI Act 2005"],
+      "keywords": ["right", "constitution", "rti", "police", "government", "fundamental", "liberty", "equality"],
+      "urgencyLevel": "medium",
+      "escalationRequired": true,
+      "examples": ["RTI filing", "Police accountability", "Constitutional rights"]
+    },
+    "corporate": {
+      "name": "Corporate & Business Law",
+      "description": "Business registration, compliance, contracts",
+      "applicableLaws": ["Companies Act 2013", "Partnership Act", "GST Act"],
+      "keywords": ["business", "company", "startup", "registration", "compliance", "contract", "director"],
+      "urgencyLevel": "low",
+      "escalationRequired": false,
+      "examples": ["Business registration", "Compliance issues", "Contract basics"]
+    }
+  },
+  "categoryMapping": {
+    "criminal": ["crime", "police", "fir", "bail", "criminal", "offence"],
+    "civil": ["dispute", "contract", "agreement", "recovery", "claim"],
+    "property": ["property", "land", "building", "registry", "encroachment"],
+    "family": ["divorce", "marriage", "custody", "maintenance", "alimony"],
+    "consumer": ["complaint", "refund", "defect", "product", "warranty"],
+    "cyber": ["cyber", "online", "hacking", "privacy", "data"],
+    "labour": ["salary", "employment", "termination", "workplace", "pf"],
+    "tax": ["tax", "income", "gst", "loan", "bank"],
+    "intellectual": ["trademark", "copyright", "patent", "brand"],
+    "motor": ["accident", "vehicle", "insurance", "traffic"],
+    "constitutional": ["right", "constitution", "rti", "government"],
+    "corporate": ["business", "company", "startup", "compliance"]
+  },
+  "urgencyLevels": {
+    "high": ["criminal", "cyber"],
+    "medium": ["civil", "property", "family", "consumer", "labour", "motor", "constitutional"],
+    "low": ["intellectual", "corporate", "tax"]
+  }
+}

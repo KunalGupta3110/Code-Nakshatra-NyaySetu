@@ -1,0 +1,166 @@
+{
+  "name": "Bharatiya Nyaya Sanhita, 2023",
+  "shortName": "BNS",
+  "category": "Criminal Law",
+  "jurisdiction": "India",
+  "effectiveDate": "2023-07-01",
+  "description": "Replacement for Indian Penal Code (IPC). Comprehensively reformulated to address modern criminal justice needs.",
+  "majorChanges": [
+    "Clearer language and simpler structure",
+    "Emphasis on victim rights",
+    "Refined sentencing provisions",
+    "Cyber crime integration",
+    "Gender-sensitive provisions"
+  ],
+  "sections": [
+    {
+      "number": 3,
+      "title": "Definitions",
+      "content": "General definitions applicable throughout the Sanhita including Act, Competent person, Counterfeit seal, Dangerous weapons, Grievous hurt, Hurt, Judicial proceeding, etc.",
+      "keywords": ["definitions", "general", "act", "person"],
+      "subsections": [
+        {
+          "number": 1,
+          "title": "Act",
+          "content": "Act means an action or omission of a person made punishable by law."
+        },
+        {
+          "number": 2,
+          "title": "Consequence",
+          "content": "Consequence includes any result which is caused by the act or omission."
+        }
+      ]
+    },
+    {
+      "number": 81,
+      "title": "Act of a person who is or becomes insane",
+      "content": "Nothing is an offence which is committed by a person who, at the time of doing it, by reason of unsoundness of mind, is incapable of knowing the nature of the act, or that he is doing what is wrong or contrary to law.",
+      "keywords": ["insanity", "unsoundness", "mental", "defence"],
+      "explanations": [
+        "This section protects persons suffering from mental illness",
+        "The unsoundness must exist at the time of committing the act",
+        "It applies to persons who cannot understand the nature/quality of the act"
+      ]
+    },
+    {
+      "number": 102,
+      "title": "Preparatory acts",
+      "content": "When a person with the intention of committing an offence does any act, or omits to do any act in such circumstances that, if he were to do such act or in such manner, it would be an offence, he is said to attempt to commit the offence.",
+      "keywords": ["attempt", "preparatory", "intention", "offence"],
+      "explanations": [
+        "Mere intention is not sufficient; there must be an act"
+      ]
+    },
+    {
+      "number": 105,
+      "title": "Committing an act in pursuance of an unlawful assembly",
+      "content": "Whoever commits an offence in pursuance of the common intention of the members of an unlawful assembly, shall be liable for that offence.",
+      "keywords": ["unlawful assembly", "common intention", "liability"],
+      "explanations": []
+    },
+    {
+      "number": 115,
+      "title": "Causing hurt",
+      "content": "Whoever voluntarily causes hurt to any person shall be punished with imprisonment of either description for a term which may extend to three months, or with fine which may extend to two hundred and fifty rupees, or with both.",
+      "keywords": ["hurt", "causing", "voluntarily", "punishment"],
+      "penalties": {
+        "imprisonment": "Up to 3 months",
+        "fine": "Up to Rs. 250",
+        "orBoth": true
+      }
+    },
+    {
+      "number": 118,
+      "title": "Causing grievous hurt",
+      "content": "Whoever causes hurt to any person, with intention or knowledge that he is likely thereby to cause grievous hurt to that person, shall be punished with imprisonment of either description for a term which may extend to six months, or with fine which may extend to five hundred rupees, or with both.",
+      "keywords": ["grievous hurt", "intention", "knowledge"],
+      "penalties": {
+        "imprisonment": "Up to 6 months",
+        "fine": "Up to Rs. 500",
+        "orBoth": true
+      }
+    },
+    {
+      "number": 131,
+      "title": "Abetting commission of offence by act or illegal omission",
+      "content": "Whoever abets any offence shall, if the act abetted is committed in consequence of the abetment and no express provision is made by this Sanhita for the punishment of such abetment, be punished with the punishment provided for the offence.",
+      "keywords": ["abetting", "abetment", "illegal omission"],
+      "explanations": [
+        "Abetment requires knowledge or intention"
+      ]
+    },
+    {
+      "number": 202,
+      "title": "Whoever fraudulently or dishonestly induces or attempts to induce any person to deliver any property",
+      "content": "Whoever fraudulently or dishonestly induces or attempts to induce any person to deliver to any person any property, knowing that he is not entitled to it, or in the case of delivery by one of two joint owners, not knowing or believing that the person to whom it is delivered is entitled, to it shall be punished with imprisonment of either description for a term which may extend to three years and shall also be liable to fine.",
+      "keywords": ["fraud", "cheating", "property", "dishonest"],
+      "penalties": {
+        "imprisonment": "Up to 3 years",
+        "fine": "Yes"
+      }
+    },
+    {
+      "number": 206,
+      "title": "Punishment for cheating",
+      "content": "Whoever cheats shall be punished with imprisonment of either description for a term which may extend to one year, or with fine which may extend to one thousand rupees, or with both.",
+      "keywords": ["cheating", "fraud", "punishment"],
+      "penalties": {
+        "imprisonment": "Up to 1 year",
+        "fine": "Up to Rs. 1000"
+      }
+    },
+    {
+      "number": 352,
+      "title": "Punishment for criminal intimidation",
+      "content": "Whoever commits criminal intimidation shall be punished with imprisonment of either description for a term which may extend to three months, or with fine which may extend to five hundred rupees, or with both.",
+      "keywords": ["intimidation", "threat", "criminal"],
+      "penalties": {
+        "imprisonment": "Up to 3 months",
+        "fine": "Up to Rs. 500"
+      }
+    },
+    {
+      "number": 354,
+      "title": "Outraging modesty of a woman",
+      "content": "Whoever intends to insult the modesty of any woman, or knowing that it is likely that his act will be insulting to the modesty of any woman, utters any word, makes any sound or gesture, or exhibits any object, with the intention that such word or sound shall be heard, or the gesture or object shall be seen, by such woman, or intrudes upon the privacy of such woman shall be punished with imprisonment which may extend to three years, or fine which may extend to two thousand rupees, or both.",
+      "keywords": ["modesty", "women", "harassment", "outrage"],
+      "penalties": {
+        "imprisonment": "Up to 3 years",
+        "fine": "Up to Rs. 2000"
+      },
+      "explanations": [
+        "This section protects the modesty and dignity of women",
+        "It covers physical acts, words, sounds, gestures and objects",
+        "It includes intrusion on privacy of women"
+      ]
+    },
+    {
+      "number": 377,
+      "title": "Punishment for voluntary carnal intercourse against the order of nature",
+      "content": "Whoever voluntarily has carnal intercourse in the manner against the order of nature shall be punished with imprisonment which may extend to life, or with fine which may extend to one hundred thousand rupees, or with both.",
+      "keywords": ["carnal", "unnatural", "intercourse"],
+      "penalties": {
+        "imprisonment": "Up to life",
+        "fine": "Up to Rs. 100000"
+      }
+    },
+    {
+      "number": 498,
+      "title": "Treating human beings as articles of merchandise, import, export or trafficking in human beings",
+      "content": "Whoever imports, exports, removes, conceals, receives, harbours or transports any person with the intention that such person shall be, or knowing that it is likely that such person shall be put to, forced labour or shall be exploited shall be punished with imprisonment which may extend to ten years and shall also be liable to fine which may extend to ten lakh rupees.",
+      "keywords": ["human trafficking", "forced labour", "exploitation"],
+      "penalties": {
+        "imprisonment": "Up to 10 years",
+        "fine": "Up to Rs. 10,00,000"
+      }
+    }
+  ],
+  "crossReferences": {
+    "BNSS": "Related procedural provisions in BNSS",
+    "BSA": "Evidence rules in Bharatiya Sakshya Adhiniyam",
+    "IPC": "Replaced Indian Penal Code sections"
+  },
+  "lastUpdated": "2023-07-01",
+  "source": "India Code Official",
+  "version": "2023"
+}
