@@ -229,7 +229,34 @@ function initScrollAnim(scope = document) {
 
 // ── COPY TO CLIPBOARD ──
 function copyText(text, msg = 'Copied!') {
-  navigator.clipboard.writeText(text).then(() => showToast(msg, '📋'));
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(text).then(() => showToast(msg, '📋')).catch(() => {
+      fallbackCopyText(text, msg);
+    });
+    return;
+  }
+
+  fallbackCopyText(text, msg);
+}
+
+function fallbackCopyText(text, msg = 'Copied!') {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'absolute';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  try {
+    const successful = document.execCommand('copy');
+    showToast(successful ? msg : 'Copy failed', successful ? '📋' : '⚠');
+  } catch (err) {
+    showToast('Copy failed', '⚠');
+  }
+
+  document.body.removeChild(textarea);
 }
 
 // ── ESCAPE HTML ──

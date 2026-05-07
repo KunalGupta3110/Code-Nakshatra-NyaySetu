@@ -3,6 +3,24 @@
    Call injectNav() in each page's <body>
 */
 
+function getFallbackLangSelectHTML() {
+  return `
+    <div class="lang-select-wrapper">
+      <div class="lang-select-visible">
+        <span class="lang-short">🌐 EN</span>
+        <span class="lang-full">🌐 English</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left: 6px; opacity: 0.6;"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <select class="lang-select-invisible" id="lang-select" aria-label="Select language" onchange="if(typeof changeLanguage==='function') changeLanguage(this.value)">
+        <option value="en">🌐 English</option>
+        <option value="hi">🌐 हिन्दी</option>
+        <option value="ta">🌐 தமிழ்</option>
+        <option value="bn">🌐 বাংলা</option>
+      </select>
+    </div>
+  `;
+}
+
 function injectNav() {
   const inPages = window.location.pathname.includes('/pages/');
   const homeHref = inPages ? '../index.html' : 'index.html';
@@ -34,7 +52,7 @@ function injectNav() {
       <div id="auth-nav-slot-menu" class="mobile-only-nav-item" style="width: 100%; margin-top: 8px;"></div>
     </div>
     <div class="nav-right">
-      <div class="nav-lang">${typeof getLangSelectHTML === 'function' ? getLangSelectHTML() : ''}</div>
+      <div class="nav-lang">${typeof getLangSelectHTML === 'function' ? getLangSelectHTML() : getFallbackLangSelectHTML()}</div>
       <button class="nav-icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">&#9728;</button>
       <a href="${pageHref('chat.html')}" class="btn-nav" data-i18n="nav_ask">Ask a Question</a>
       <span id="auth-nav-slot"></span>

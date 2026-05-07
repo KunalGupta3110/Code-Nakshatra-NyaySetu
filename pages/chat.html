@@ -2002,20 +2002,24 @@ Rules:
       `;
     }
 
-    window.findLawyer = async function (mid) {
+    window.findLawyer = function (mid) {
       const btn = document.querySelector(`#lawyer-prompt-${mid} .lawyer-cta-action`);
       if (btn) {
         btn.disabled = true;
-        btn.textContent = 'Finding lawyers...';
+        btn.textContent = 'Redirecting...';
       }
 
       try {
-        openLawyerModal();
-        const context = await createCaseIfNeeded();
-        await loadLawyerModalForCase(context.caseId);
+        const context = {
+          problemType: 'Legal AI Inquiry',
+          summary: window.lastUserText || '',
+          generatedDocumentStatus: window.lastAiReply ? 'AI response ready' : 'pending'
+        };
+        sessionStorage.setItem('lawyer_request_context', JSON.stringify(context));
+        window.location.href = 'legal-help.html';
       } catch (err) {
         console.error(err);
-        showToast(err.message || 'Failed to connect. Please try again later.', '⚠');
+        showToast(err.message || 'Unable to redirect to legal help page.', '⚠');
       } finally {
         if (btn) {
           btn.disabled = false;

@@ -129,6 +129,7 @@ main { width: 100%; overflow-x: hidden; }
 </head>
 <body data-page="legal-help">
 <script src="../js/utils.js"></script>
+<script src="../js/i18n.js"></script>
 <script src="../js/nav.js"></script>
 <script>injectNav();</script>
 <main class="page-wrap">
@@ -376,6 +377,27 @@ function submitLegalHelpForm() {
     alert(message);
   }, 1000);
 }
+
+function restoreLegalHelpContext() {
+  try {
+    const stored = sessionStorage.getItem('lawyer_request_context');
+    if (!stored) return;
+    const ctx = JSON.parse(stored);
+    sessionStorage.removeItem('lawyer_request_context');
+
+    if (ctx.summary) document.getElementById('case-desc').value = ctx.summary;
+    if (ctx.problemType) document.getElementById('case-title').value = ctx.problemType;
+    if (ctx.generatedDocumentStatus) {
+      showToast(`Saved from chat: ${ctx.generatedDocumentStatus}`, '✔');
+    }
+    if (ctx.location) document.getElementById('case-location').value = ctx.location;
+    if (ctx.language) document.getElementById('case-language').value = ctx.language;
+  } catch (err) {
+    console.warn('Unable to restore legal help context', err);
+  }
+}
+
+restoreLegalHelpContext();
 </script>
 <script>
 if (typeof initScrollAnim === 'function') initScrollAnim();

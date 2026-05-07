@@ -102,8 +102,10 @@
 <script src="../js/nav.js"></script>
 <script src="../js/templates/legal_notice.js"></script>
 <script src="../js/templates/affidavit.js"></script>
-<script src="../js/utils.js"></script>
-<script src="../js/nav.js"></script>
+<script src="../js/templates/rent_agreement.js"></script>
+<script src="../js/templates/consumer_complaint.js"></script>
+<script src="../js/templates/rti.js"></script>
+<script src="../js/templates/bail_application.js"></script>
 <script>injectNav();</script>
 
 <main style="padding-top:64px">
@@ -458,6 +460,27 @@ function renderForm() {
   document.getElementById('f-fields').innerHTML = html;
 }
 
+function blocksToPlainText(blocks) {
+  if (!Array.isArray(blocks)) return '';
+  const lines = [];
+  blocks.forEach(block => {
+    if (!block || typeof block.text !== 'string') return;
+    const text = block.text.trim();
+    if (!text) return;
+    if (block.type === 'title') {
+      lines.push(text.toUpperCase());
+      lines.push('');
+      return;
+    }
+    if (block.type === 'heading') {
+      lines.push(text);
+      return;
+    }
+    lines.push(text);
+  });
+  return lines.join('\n\n').trim();
+}
+
 function escapeDocHtml(text) {
   return String(text || '')
     .replace(/&/g, '&amp;')
@@ -554,8 +577,12 @@ async function generateDocument() {
       const templateFunc = window.DocTemplates && window.DocTemplates[selectedType];
       if (!templateFunc) throw new Error('Template not found for this document type');
       
-      generatedText = templateFunc(data);
-      currentDocumentData = data;
+      const blocks = templateFunc(data);
+      const plainText = blocksToPlainText(blocks);
+      if (!plainText) throw new Error('Unable to render document preview.');
+      
+      generatedText = plainText;
+      currentDocumentData = { ...data, blocks };
       
       pb.className = 'preview-body ready';
       pb.textContent = generatedText;
@@ -564,7 +591,7 @@ async function generateDocument() {
     } catch (err) {
       console.error(err);
       pb.innerHTML = `<div class="generating" style="color:var(--red)"><span style="font-size:28px">⚠</span><span>Generation failed. Please try again.</span></div>`;
-      showToast('Generation failed. Please try again.', '⚠');
+      showToast(err.message || 'Generation failed. Please try again.', '⚠');
     }
     
     btn.disabled = false;
@@ -576,7 +603,12 @@ async function generateDocument() {
 
 <script>
 function downloadPDF() {
-  if (!currentDocumentData || !currentDocumentData.blocks) {
+  let blocks = Array.isArray(currentDocumentData?.blocks) ? currentDocumentData.blocks : [];
+  if (!blocks.length && generatedText) {
+    blocks = [{ type: 'body', text: generatedText }];
+  }
+
+  if (!blocks.length) {
     showToast('No document to download. Generate one first.', '⚠');
     return;
   }
@@ -595,7 +627,6 @@ function downloadPDF() {
   const usableBottom = pageHeight - margin.bottom;
 
   let y = margin.top;
-  const blocks = currentDocumentData.blocks;
 
   function addPageIfNeeded(requiredHeight) {
     if (y + requiredHeight > usableBottom) {
@@ -605,9 +636,11 @@ function downloadPDF() {
   }
 
   blocks.forEach(block => {
+    if (!block || typeof block.text !== 'string') return;
+
     let fontSize = 11;
     let fontStyle = 'normal';
-    let lineHeight = 5.5;
+    let lineHeight = 6;
     let align = 'left';
 
     if (block.type === 'title') {
@@ -618,10 +651,11 @@ function downloadPDF() {
     } else if (block.type === 'heading') {
       fontSize = 12;
       fontStyle = 'bold';
-      lineHeight = 6.5;
+      lineHeight = 7;
     } else if (block.type === 'signature') {
       fontSize = 11;
       fontStyle = 'normal';
+      lineHeight = 6.5;
     }
 
     doc.setFont('Times', fontStyle);
@@ -635,24 +669,17 @@ function downloadPDF() {
 
     if (block.type === 'title') y += 4;
     else if (block.type === 'heading') y += 6;
-    else if (block.type === 'signature') y += 12;
-    else y += 2;
+    else if (block.type === 'signature') y += 10;
+    else y += 3;
 
     lines.forEach(line => {
       addPageIfNeeded(lineHeight);
-      
-      let x = margin.left;
-      if (align === 'center') {
-        x = pageWidth / 2;
-      }
-      
-      doc.text(line, x, y, { align: align });
+      const x = align === 'center' ? pageWidth / 2 : margin.left;
+      doc.text(line, x, y, { align });
       y += lineHeight;
     });
 
-    if (block.type === 'title') y += 6;
-    else if (block.type === 'heading') y += 2;
-    else y += 2;
+    y += block.type === 'title' ? 6 : 4;
   });
 
   const pageCount = doc.internal.getNumberOfPages();
@@ -662,10 +689,9 @@ function downloadPDF() {
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
     doc.text(`Page ${page} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-    doc.setTextColor(20, 20, 20);
   }
 
-  const prefix = selectedType.replace('-', '_');
+  const prefix = selectedType.replace(/-/g, '_');
   doc.save(`${prefix}_${Date.now()}.pdf`);
 }
 </script>
