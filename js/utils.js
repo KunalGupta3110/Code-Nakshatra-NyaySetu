@@ -118,16 +118,23 @@ function logoutUser() {
 }
 
 async function authRequest(endpoint, payload) {
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const url = String(endpoint || '').startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
 
+  const text = await res.text();
   let data = {};
-  try { data = await res.json(); } catch (err) {}
+  try {
+    data = JSON.parse(text);
+  } catch (err) {
+    data = { error: text.trim() || 'Invalid server response' };
+  }
+
   if (!res.ok || data.error) {
-    throw new Error(data.error || 'Authentication failed. Please try again.');
+    throw new Error(data.error || `Request failed with status ${res.status}`);
   }
   return data;
 }

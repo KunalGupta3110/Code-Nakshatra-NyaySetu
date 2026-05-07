@@ -18,7 +18,7 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..")));
+app.use(express.urlencoded({ extended: true }));
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -265,6 +265,9 @@ app.post("/signup", async (req, res) => {
     const { name, email, password, profile, role } = req.body || {};
     const cleanName = String(name || "").trim();
     const cleanEmail = String(email || "").trim().toLowerCase();
+    const userRole = String(role || 'user').toLowerCase();
+
+    console.log('POST /signup', { email: cleanEmail, name: cleanName, role: userRole });
 
     if (!cleanName || !cleanEmail || !password) {
       return res.status(400).json({ error: "Name, email, and password are required." });
@@ -287,15 +290,18 @@ app.post("/signup", async (req, res) => {
       email: cleanEmail,
       passwordHash: hash,
       salt,
-      role: role || 'user',
+      role: userRole,
       profile: profile || {}
     });
+
+    console.log('Signup successful:', { id: user._id.toString(), email: user.email, role: user.role, createdAt: user.createdAt });
 
     res.status(201).json({
       token: createToken(),
       user: publicUser(user)
     });
   } catch (err) {
+    console.error('Signup error:', err);
     res.status(500).json({ error: "Server error during signup." });
   }
 });
@@ -1008,6 +1014,8 @@ app.post("/update-payment-status", async (req, res) => {
     res.status(500).json({ error: err.message || "Failed to update payment status." });
   }
 });
+
+app.use(express.static(path.join(__dirname, "..")));
 
 // ================= SERVER =================
 const PORT = process.env.PORT || 5000;

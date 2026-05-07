@@ -474,23 +474,15 @@ window.signUp = async () => {
   }
 
   setAuthLoading('signup', true);
-  
+
   try {
-    const res = await fetch(typeof API_BASE_URL !== 'undefined' ? API_BASE_URL + '/signup' : '/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userPayload)
-    });
-    
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to create account');
-    
+    const data = await authRequest('/signup', userPayload);
     saveCurrentUser(data.user);
     localStorage.setItem('nyaysetu_token', data.token);
     showToast('Account created successfully', 'OK');
     setTimeout(() => redirectAfterAuth(data.user), 450);
   } catch (err) {
-    showToast(err.message, '!');
+    showToast(err.message || 'Signup failed. Please try again.', '!');
     setAuthLoading('signup', false);
   }
 };
@@ -513,21 +505,13 @@ window.signIn = async () => {
   setAuthLoading('signin', true);
   
   try {
-    const res = await fetch(typeof API_BASE_URL !== 'undefined' ? API_BASE_URL + '/login' : '/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
-    
+    const data = await authRequest('/login', { email, password });
     saveCurrentUser(data.user);
     localStorage.setItem('nyaysetu_token', data.token);
     showToast('Signed in successfully', 'OK');
     setTimeout(() => redirectAfterAuth(data.user), 450);
   } catch (err) {
-    showToast(err.message, '!');
+    showToast(err.message || 'Login failed. Please try again.', '!');
     setAuthLoading('signin', false);
   }
 };
