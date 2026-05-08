@@ -10,7 +10,12 @@
     "test": "jest --coverage",
     "index:legal-kb": "node scripts/index-legal-kb.js",
     "init:rag": "node scripts/init-rag.js",
-    "setup": "npm install && node scripts/setup.js"
+    "setup": "npm install && node scripts/setup.js",
+    "ingest:real-data": "node scripts/init-real-data.js",
+    "ingest:ecourt": "node -e \"const DataIngestionPipeline = require('./scripts/data-ingestion-pipeline'); new DataIngestionPipeline().ingestRealData({ sources: ['ecourt'] })\"",
+    "ingest:supreme-court": "node -e \"const DataIngestionPipeline = require('./scripts/data-ingestion-pipeline'); new DataIngestionPipeline().ingestRealData({ sources: ['supreme-court'] })\"",
+    "ingest:high-courts": "node -e \"const DataIngestionPipeline = require('./scripts/data-ingestion-pipeline'); new DataIngestionPipeline().ingestRealData({ sources: ['high-court'] })\"",
+    "ingest:all": "node -e \"const DataIngestionPipeline = require('./scripts/data-ingestion-pipeline'); new DataIngestionPipeline().ingestRealData({ sources: ['ecourt', 'supreme-court', 'high-court', 'indian-kanoon'] })\""
   },
   "dependencies": {
     "cors": "^2.8.6",
